@@ -21,11 +21,22 @@
         }
       }
     </script>
-    <link rel="stylesheet" href="styles.css">
+    <style>
+      /* Global Styles */
+      body {
+        font-family: 'Proxima Nova', -apple-system, 'Roboto', Helvetica, Arial, sans-serif;
+        -webkit-font-smoothing: antialiased;
+        background-color: #ebebeb;
+      }
+      ::-webkit-scrollbar { width: 8px; }
+      ::-webkit-scrollbar-track { background: #f1f1f1; }
+      ::-webkit-scrollbar-thumb { background: #ccc; border-radius: 4px; }
+      ::-webkit-scrollbar-thumb:hover { background: #bbb; }
+    </style>
     <!-- Babel for in-browser compilation -->
     <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
     
-    <!-- Import Maps for external modules -->
+    <!-- Import Maps: Fixed to use ONLY React 18 from esm.sh to avoid Version Conflict Error #31 -->
     <script type="importmap">
 {
   "imports": {
@@ -50,10 +61,15 @@
 
         // --- Configuration & Services ---
         
-        // NOTE: In a static browser environment without a bundler, process.env is usually undefined.
-        // For this demo to work on Netlify, you would typically replace this string with your key
-        // or use a plugin to inject it. We keep the standard pattern here.
-        const apiKey = process.env.API_KEY || "YOUR_API_KEY_HERE"; 
+        // Safety check for environment variables in browser
+        const getApiKey = () => {
+            if (typeof process !== 'undefined' && process.env && process.env.API_KEY) {
+                return process.env.API_KEY;
+            }
+            return "YOUR_API_KEY_HERE";
+        };
+
+        const apiKey = getApiKey();
         const ai = new GoogleGenAI({ apiKey: apiKey });
 
         const searchProductsWithGemini = async (query) => {
