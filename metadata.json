@@ -1,0 +1,5 @@
+{
+  "name": "Mercado Clone",
+  "description": "A high-fidelity, functional clone of the Mercado Livre interface using React, Tailwind CSS, and Gemini API for intelligent product search.",
+  "requestFramePermissions": []
+}
