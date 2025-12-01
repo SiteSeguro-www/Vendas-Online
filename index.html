@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Mercado Clone</title>
+    <title>Mercado Clone - Vendas Online</title>
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
@@ -22,21 +22,405 @@
       }
     </script>
     <link rel="stylesheet" href="styles.css">
+    <!-- Babel for in-browser compilation -->
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    
+    <!-- Import Maps: strict version control to avoid duplicate React instances -->
     <script type="importmap">
-    {
-      "imports": {
-        "react": "https://aistudiocdn.com/react@^19.2.0",
-        "react-dom/client": "https://aistudiocdn.com/react-dom@^19.2.0/client",
-        "react/": "https://aistudiocdn.com/react@^19.2.0/",
-        "react-dom/": "https://aistudiocdn.com/react-dom@^19.2.0/",
-        "@google/genai": "https://aistudiocdn.com/@google/genai@^1.30.0",
-        "lucide-react": "https://aistudiocdn.com/lucide-react@^0.555.0"
-      }
-    }
-    </script>
+{
+  "imports": {
+    "react": "https://esm.sh/react@18.2.0",
+    "react-dom/client": "https://esm.sh/react-dom@18.2.0/client",
+    "@google/genai": "https://esm.sh/@google/genai",
+    "lucide-react": "https://esm.sh/lucide-react@0.263.1",
+    "react-dom/": "https://aistudiocdn.com/react-dom@^19.2.0/",
+    "react/": "https://aistudiocdn.com/react@^19.2.0/"
+  }
+}
+</script>
 </head>
 <body class="bg-[#ebebeb]">
     <div id="root"></div>
-    <script type="module" src="index.tsx"></script>
+
+    <script type="text/babel" data-type="module">
+        import React, { useState, useEffect } from 'react';
+        import { createRoot } from 'react-dom/client';
+        import { GoogleGenAI, Type } from "@google/genai";
+        import { Search, MapPin, ShoppingCart, Menu, ChevronDown, Zap, Heart, Loader2 } from 'lucide-react';
+
+        // --- Configuration & Services ---
+        
+        // Safely retrieve API Key in browser environment
+        const getApiKey = () => {
+            if (typeof process !== "undefined" && process.env && process.env.API_KEY) {
+                return process.env.API_KEY;
+            }
+            // Fallback or empty string if not found. 
+            // In a real deployed static app, you might need a different strategy or rely on the user providing it.
+            return ""; 
+        };
+
+        const apiKey = getApiKey();
+        const ai = apiKey ? new GoogleGenAI({ apiKey: apiKey }) : null;
+
+        const searchProductsWithGemini = async (query) => {
+          if (!ai) {
+              console.warn("API Key missing for Gemini");
+              return [];
+          }
+          try {
+            const response = await ai.models.generateContent({
+              model: "gemini-2.5-flash",
+              contents: `Generate a list of 8 realistic e-commerce products based on the search query: "${query}". 
+              If the query is nonsense, try to guess what user meant or return generic tech items.
+              The output must be in Portuguese (Brazil).
+              For images, use 'https://picsum.photos/300/300?random=' followed by a random number.
+              Make sure prices are realistic numbers. 'originalPrice' should be higher than 'price'.
+              'fullDelivery' means 'Chega amanhã' feature.`,
+              config: {
+                responseMimeType: "application/json",
+                responseSchema: {
+                  type: Type.ARRAY,
+                  items: {
+                    type: Type.OBJECT,
+                    properties: {
+                      id: { type: Type.STRING },
+                      title: { type: Type.STRING },
+                      price: { type: Type.NUMBER },
+                      originalPrice: { type: Type.NUMBER },
+                      imageUrl: { type: Type.STRING },
+                      freeShipping: { type: Type.BOOLEAN },
+                      fullDelivery: { type: Type.BOOLEAN },
+                      reviews: { type: Type.INTEGER },
+                      discount: { type: Type.INTEGER }
+                    },
+                    required: ["id", "title", "price", "imageUrl", "reviews"],
+                  },
+                },
+              },
+            });
+
+            const text = response.text;
+            if (!text) return [];
+            
+            const data = JSON.parse(text);
+            return data.map((item, index) => ({
+                ...item,
+                imageUrl: `https://picsum.photos/300/300?random=${Math.floor(Math.random() * 1000) + index}`
+            }));
+          } catch (error) {
+            console.error("Gemini Search Error:", error);
+            return [];
+          }
+        };
+
+        // --- Components ---
+
+        const Header = ({ onSearch }) => {
+          const [inputValue, setInputValue] = useState('');
+
+          const handleSubmit = (e) => {
+            e.preventDefault();
+            if (inputValue.trim()) {
+              onSearch(inputValue);
+            }
+          };
+
+          return (
+            <header className="bg-ml-yellow shadow-sm sticky top-0 z-50">
+              <div className="max-w-[1200px] mx-auto px-4 pb-2 pt-2">
+                <div className="flex items-center gap-4 py-2">
+                    <a href="#" onClick={() => window.location.reload()} className="flex-shrink-0 cursor-pointer">
+                        <div className="font-extrabold text-[#2d3277] text-2xl tracking-tighter leading-none">
+                            mercadoclone
+                        </div>
+                    </a>
+
+                    <form onSubmit={handleSubmit} className="flex-grow flex relative shadow-sm rounded bg-white h-10">
+                        <input 
+                            type="text" 
+                            className="flex-grow px-4 rounded-l text-ml-gray outline-none placeholder-gray-300 text-[15px]"
+                            placeholder="Buscar produtos, marcas e muito mais..."
+                            value={inputValue}
+                            onChange={(e) => setInputValue(e.target.value)}
+                        />
+                        <button type="submit" className="px-3 border-l border-gray-100 flex items-center justify-center text-gray-500 hover:text-gray-700">
+                            <Search size={20} />
+                        </button>
+                    </form>
+
+                    <div className="hidden lg:flex items-center gap-4">
+                       <img src="https://picsum.photos/300/40" alt="Promo" className="h-[39px] rounded shadow-sm object-cover w-[340px]" />
+                    </div>
+                    
+                    <div className="lg:hidden text-ml-gray">
+                        <Menu />
+                    </div>
+                </div>
+
+                <div className="hidden lg:flex justify-between items-center text-[13px] text-ml-gray/80 pb-1">
+                    <div className="flex items-center gap-1 hover:border hover:border-gray-300/50 p-1 rounded cursor-pointer transition-colors">
+                        <MapPin size={18} className="text-gray-600" />
+                        <div className="flex flex-col leading-tight">
+                            <span className="text-[11px] text-gray-500">Enviar para</span>
+                            <span className="text-[13px] text-gray-800 font-medium">Capital, São Paulo</span>
+                        </div>
+                    </div>
+
+                    <nav className="flex items-center gap-5 font-normal text-ml-gray/90">
+                        <div className="flex items-center gap-1 cursor-pointer hover:text-ml-blue transition-colors">
+                            Categorias <ChevronDown size={12} />
+                        </div>
+                        <a href="#" className="hover:text-ml-blue transition-colors">Ofertas</a>
+                        <a href="#" className="hover:text-ml-blue transition-colors">Histórico</a>
+                        <a href="#" className="hover:text-ml-blue transition-colors">Supermercado</a>
+                        <a href="#" className="hover:text-ml-blue transition-colors">Moda</a>
+                        <a href="#" className="hover:text-ml-blue transition-colors">Vender</a>
+                        <a href="#" className="hover:text-ml-blue transition-colors">Contato</a>
+                    </nav>
+
+                    <div className="flex items-center gap-4 font-medium text-ml-gray">
+                         <a href="#" className="hover:text-ml-blue transition-colors">Crie a sua conta</a>
+                         <a href="#" className="hover:text-ml-blue transition-colors">Entre</a>
+                         <a href="#" className="hover:text-ml-blue transition-colors">Compras</a>
+                         <a href="#" className="hover:text-ml-blue transition-colors"><ShoppingCart size={20} /></a>
+                    </div>
+                </div>
+              </div>
+            </header>
+          );
+        };
+
+        const Hero = () => {
+          return (
+            <div className="w-full bg-gradient-to-b from-ml-yellow/60 to-ml-bg pb-8 relative overflow-hidden">
+              <div className="max-w-[1200px] mx-auto px-4 lg:px-0 pt-4">
+                <div className="relative rounded w-full h-[180px] md:h-[280px] lg:h-[320px] bg-gray-200 overflow-hidden cursor-pointer shadow-sm">
+                     <img 
+                        src="https://picsum.photos/1200/350?grayscale" 
+                        alt="Banner Principal" 
+                        className="w-full h-full object-cover"
+                     />
+                     <div className="absolute inset-0 bg-gradient-to-r from-black/40 to-transparent flex flex-col justify-center px-8 md:px-16 text-white">
+                        <h2 className="text-3xl md:text-5xl font-bold mb-2 uppercase">Ofertas <br/> do Dia</h2>
+                        <p className="text-lg md:text-xl font-medium mb-6">Descontos de até 60%</p>
+                        <button className="bg-ml-blue text-white font-semibold py-3 px-6 rounded shadow-md w-max hover:bg-blue-600 transition-colors">
+                            Confira Agora
+                        </button>
+                     </div>
+                     
+                     <div className="absolute bottom-4 right-4 flex gap-2">
+                         <div className="w-2 h-2 rounded-full bg-white"></div>
+                         <div className="w-2 h-2 rounded-full bg-white/50"></div>
+                         <div className="w-2 h-2 rounded-full bg-white/50"></div>
+                     </div>
+                </div>
+              </div>
+              <div className="absolute bottom-0 left-0 w-full h-16 bg-gradient-to-t from-[#ebebeb] to-transparent"></div>
+            </div>
+          );
+        };
+
+        const ProductCard = ({ product }) => {
+          const formatCurrency = (val) => {
+            return new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(val);
+          };
+
+          const installments = Math.min(10, Math.floor(product.price / 50)) || 1;
+          const installmentValue = product.price / installments;
+
+          return (
+            <div className="bg-white rounded shadow-sm hover:shadow-xl transition-shadow duration-300 cursor-pointer border border-gray-100 flex flex-col h-full group relative">
+              <div className="absolute top-3 right-3 z-10 opacity-0 group-hover:opacity-100 transition-opacity p-1 bg-white rounded-full shadow-sm text-ml-blue hover:bg-blue-50">
+                  <Heart size={20} />
+              </div>
+              
+              <div className="h-[224px] w-full border-b border-gray-50 flex items-center justify-center p-4 relative">
+                <img 
+                    src={product.imageUrl} 
+                    alt={product.title} 
+                    className="max-h-full max-w-full object-contain mx-auto mix-blend-multiply"
+                />
+              </div>
+
+              <div className="p-4 flex flex-col flex-grow">
+                <h3 className="text-gray-800 text-sm font-light leading-snug line-clamp-2 mb-2 group-hover:text-ml-blue transition-colors">
+                    {product.title}
+                </h3>
+
+                {product.originalPrice && product.originalPrice > product.price && (
+                    <span className="text-xs text-gray-400 line-through decoration-gray-400">
+                        {formatCurrency(product.originalPrice)}
+                    </span>
+                )}
+
+                <div className="flex items-center gap-2 mb-1">
+                    <span className="text-2xl text-gray-900 font-normal">
+                        {formatCurrency(product.price)}
+                    </span>
+                    {product.discount && (
+                        <span className="text-ml-green text-sm font-medium">
+                            {product.discount}% OFF
+                        </span>
+                    )}
+                </div>
+
+                <div className="text-sm text-ml-green font-medium mb-1">
+                     em {installments}x {formatCurrency(installmentValue)} sem juros
+                </div>
+
+                {product.fullDelivery && (
+                     <div className="text-xs text-ml-green font-bold italic flex items-center gap-1 mt-1">
+                        Chega grátis amanhã <Zap size={12} fill="currentColor" />
+                     </div>
+                )}
+                
+                {!product.fullDelivery && product.freeShipping && (
+                    <div className="text-xs text-ml-green font-semibold mt-1">
+                        Frete grátis
+                    </div>
+                )}
+                
+                <div className="text-xs text-gray-400 mt-auto pt-2 hidden group-hover:block">
+                    Vendido por MercadoLivre
+                </div>
+              </div>
+            </div>
+          );
+        };
+
+        const INITIAL_PRODUCTS = [
+            {
+                id: '1',
+                title: 'Smartphone Samsung Galaxy S23 Ultra 5G 256GB 12GB RAM',
+                price: 5499.00,
+                originalPrice: 8999.00,
+                imageUrl: 'https://picsum.photos/300/300?random=1',
+                freeShipping: true,
+                fullDelivery: true,
+                reviews: 120,
+                discount: 38
+            },
+            {
+                id: '2',
+                title: 'Notebook Dell Inspiron 15 3000 Intel Core i5 8GB 256GB SSD',
+                price: 3299.00,
+                originalPrice: 4199.00,
+                imageUrl: 'https://picsum.photos/300/300?random=2',
+                freeShipping: true,
+                fullDelivery: false,
+                reviews: 85,
+                discount: 21
+            },
+            {
+                id: '3',
+                title: 'Smart TV 50" 4K LED Crystal UHD Samsung',
+                price: 2399.00,
+                originalPrice: 3199.00,
+                imageUrl: 'https://picsum.photos/300/300?random=3',
+                freeShipping: true,
+                fullDelivery: true,
+                reviews: 450,
+                discount: 25
+            },
+            {
+                id: '4',
+                title: 'Fone de Ouvido Bluetooth JBL Tune 510BT Pure Bass',
+                price: 249.00,
+                originalPrice: 299.00,
+                imageUrl: 'https://picsum.photos/300/300?random=4',
+                freeShipping: false,
+                fullDelivery: true,
+                reviews: 1200,
+                discount: 16
+            },
+            {
+                id: '5',
+                title: 'Console PlayStation 5 + God of War Ragnarök',
+                price: 3999.00,
+                originalPrice: 4499.90,
+                imageUrl: 'https://picsum.photos/300/300?random=5',
+                freeShipping: true,
+                fullDelivery: true,
+                reviews: 900,
+                discount: 11
+            }
+        ];
+
+        const App = () => {
+          const [products, setProducts] = useState(INITIAL_PRODUCTS);
+          const [loading, setLoading] = useState(false);
+          const [searchQuery, setSearchQuery] = useState('');
+
+          const handleSearch = async (query) => {
+            setSearchQuery(query);
+            setLoading(true);
+            const el = document.getElementById('products-anchor');
+            if(el) el.scrollIntoView({ behavior: 'smooth' });
+
+            const results = await searchProductsWithGemini(query);
+            if (results && results.length > 0) {
+              setProducts(results);
+            }
+            setLoading(false);
+          };
+
+          return (
+            <div className="min-h-screen flex flex-col font-sans">
+              <Header onSearch={handleSearch} />
+              
+              <main className="flex-grow pb-12">
+                {!searchQuery && <Hero />}
+
+                <div className="max-w-[1200px] mx-auto px-4 lg:px-0 mt-8" id="products-anchor">
+                    
+                    <div className="mb-6 flex items-baseline gap-4">
+                        <h2 className="text-2xl text-gray-700 font-light">
+                            {loading ? 'Buscando...' : searchQuery ? `Resultados para "${searchQuery}"` : 'Baseado na sua última visita'}
+                        </h2>
+                        {!loading && !searchQuery && (
+                            <a href="#" className="text-ml-blue text-sm hover:underline">Ver histórico</a>
+                        )}
+                    </div>
+
+                    {loading && (
+                        <div className="w-full flex flex-col items-center justify-center py-20 text-gray-400">
+                            <Loader2 className="animate-spin mb-4 text-ml-blue" size={48} />
+                            <p>Encontrando as melhores ofertas...</p>
+                        </div>
+                    )}
+
+                    {!loading && (
+                        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+                            {products.map((product) => (
+                                <div key={product.id} className="h-[420px]">
+                                    <ProductCard product={product} />
+                                </div>
+                            ))}
+                        </div>
+                    )}
+
+                    {!loading && products.length === 0 && (
+                         <div className="bg-white p-12 rounded shadow-sm text-center">
+                            <h3 className="text-xl font-medium text-gray-800 mb-2">Não encontramos produtos.</h3>
+                            <p className="text-gray-500">Verifique a ortografia ou use termos mais genéricos.</p>
+                         </div>
+                    )}
+                </div>
+              </main>
+
+              <footer className="bg-white border-t border-gray-200 py-8 text-xs text-gray-500">
+                 <div className="max-w-[1200px] mx-auto px-4 text-center">
+                    <p className="mb-2">Copyright © 1999-2024 Ebazar.com.br LTDA.</p>
+                    <p>CNPJ n.º 03.007.331/0001-41 / Av. das Nações Unidas, nº 3.003, Bonfim, Osasco/SP - CEP 06233-903 - empresa do grupo Mercado Livre.</p>
+                 </div>
+              </footer>
+            </div>
+          );
+        };
+
+        const root = createRoot(document.getElementById('root'));
+        root.render(<App />);
+    </script>
 </body>
 </html>
