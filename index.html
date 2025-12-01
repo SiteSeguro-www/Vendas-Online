@@ -21,22 +21,11 @@
         }
       }
     </script>
-    <style>
-      /* Global Styles */
-      body {
-        font-family: 'Proxima Nova', -apple-system, 'Roboto', Helvetica, Arial, sans-serif;
-        -webkit-font-smoothing: antialiased;
-        background-color: #ebebeb;
-      }
-      ::-webkit-scrollbar { width: 8px; }
-      ::-webkit-scrollbar-track { background: #f1f1f1; }
-      ::-webkit-scrollbar-thumb { background: #ccc; border-radius: 4px; }
-      ::-webkit-scrollbar-thumb:hover { background: #bbb; }
-    </style>
+    <link rel="stylesheet" href="styles.css">
     <!-- Babel for in-browser compilation -->
     <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
     
-    <!-- Import Maps: Fixed to use ONLY React 18 from esm.sh to avoid Version Conflict Error #31 -->
+    <!-- Import Maps: Using strictly React 18 from esm.sh to prevent version conflicts -->
     <script type="importmap">
 {
   "imports": {
@@ -61,7 +50,7 @@
 
         // --- Configuration & Services ---
         
-        // Safety check for environment variables in browser
+        // Safe API Key retrieval for browser environment
         const getApiKey = () => {
             if (typeof process !== 'undefined' && process.env && process.env.API_KEY) {
                 return process.env.API_KEY;
