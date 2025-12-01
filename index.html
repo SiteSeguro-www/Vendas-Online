@@ -3,7 +3,6 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="monetag" content="4b49cad0a185929ef7fcae1a810994db">
     <title>Mercado Clone - Vendas Online</title>
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
     <script src="https://cdn.tailwindcss.com"></script>
@@ -26,14 +25,14 @@
     <!-- Babel for in-browser compilation -->
     <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
     
-    <!-- Import Maps: Fixed to use ONLY React 18 from esm.sh to avoid version conflicts -->
+    <!-- Import Maps: Using strictly React 18 from esm.sh to prevent version conflicts -->
     <script type="importmap">
 {
   "imports": {
     "react": "https://esm.sh/react@18.2.0",
     "react-dom/client": "https://esm.sh/react-dom@18.2.0/client",
     "@google/genai": "https://esm.sh/@google/genai",
-    "lucide-react": "https://esm.sh/lucide-react?deps=react@18.2.0",
+    "lucide-react": "https://esm.sh/lucide-react",
     "react-dom/": "https://aistudiocdn.com/react-dom@^19.2.0/",
     "react/": "https://aistudiocdn.com/react@^19.2.0/"
   }
@@ -51,15 +50,10 @@
 
         // --- Configuration & Services ---
         
-        // SAFE KEY RETRIEVAL:
-        // Checks if 'process' exists to avoid "ReferenceError: process is not defined" in browser
+        // Safe API Key retrieval for browser environment
         const getApiKey = () => {
-            try {
-                if (typeof process !== 'undefined' && process.env && process.env.API_KEY) {
-                    return process.env.API_KEY;
-                }
-            } catch (e) {
-                // process is not defined, ignore error
+            if (typeof process !== 'undefined' && process.env && process.env.API_KEY) {
+                return process.env.API_KEY;
             }
             return "YOUR_API_KEY_HERE";
         };
