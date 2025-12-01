@@ -1,50 +1,177 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Mercado Clone - Frete Grátis no mesmo dia</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Proxima+Nova:wght@300;400;600;700&display=swap" rel="stylesheet">
-    <script>
-      tailwind.config = {
-        theme: {
-          extend: {
-            colors: {
-              ml: {
-                yellow: '#fff159',
-                blue: '#3483fa',
-                bg: '#ebebeb',
-                gray: '#333333',
-                lightgray: '#999999',
-                green: '#00a650',
-              }
-            },
-            fontFamily: {
-              sans: ['system-ui', '-apple-system', 'BlinkMacSystemFont', 'Segoe UI', 'Roboto', 'Helvetica Neue', 'Arial', 'sans-serif'],
-            }
-          }
-        }
-      }
-    </script>
-    <style>
-        body {
-            background-color: #ebebeb;
-        }
-    </style>
-  <script type="importmap">
+    <link rel="stylesheet" href="styles.css">
+<script type="importmap">
 {
   "imports": {
-    "react/": "https://aistudiocdn.com/react@^19.2.0/",
     "react": "https://aistudiocdn.com/react@^19.2.0",
     "react-dom/": "https://aistudiocdn.com/react-dom@^19.2.0/",
+    "react/": "https://aistudiocdn.com/react@^19.2.0/",
     "@google/genai": "https://aistudiocdn.com/@google/genai@^1.30.0",
     "lucide-react": "https://aistudiocdn.com/lucide-react@^0.555.0"
   }
 }
 </script>
 </head>
-  <body>
-    <div id="root"></div>
-  </body>
+<body>
+    <!-- Header -->
+    <header class="site-header">
+        <div class="container header-content">
+            <div class="logo-area">
+                <a href="index.html" class="logo">mercadoclone</a>
+            </div>
+            
+            <div class="search-area">
+                <form action="index.html" class="search-box">
+                    <input type="text" placeholder="Buscar produtos, marcas e muito mais...">
+                    <button type="button" class="search-btn">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#666" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+                    </button>
+                </form>
+                <div class="nav-links">
+                    <a href="#">Categorias</a>
+                    <a href="#">Ofertas</a>
+                    <a href="#">Histórico</a>
+                    <a href="#">Supermercado</a>
+                    <a href="#">Moda</a>
+                    <a href="#">Vender</a>
+                    <a href="#">Contato</a>
+                </div>
+            </div>
+
+            <div class="menu-area">
+                <a href="#"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"></path><line x1="3" y1="6" x2="21" y2="6"></line><path d="M16 10a4 4 0 0 1-8 0"></path></svg></a>
+            </div>
+        </div>
+    </header>
+
+    <!-- Banner -->
+    <div class="hero-section">
+        <div class="container">
+            <div class="banner">
+                <div class="banner-text">
+                    <h2>OFERTAS DO DIA</h2>
+                    <p>APROVEITE HOJE</p>
+                </div>
+            </div>
+        </div>
+        <div class="banner-gradient"></div>
+    </div>
+
+    <!-- Main Content -->
+    <main class="container main-content">
+        <h2 class="section-title">Baseado na sua última visita</h2>
+        
+        <div class="product-grid">
+            <!-- Product 1 -->
+            <a href="produto.html" class="product-card">
+                <div class="card-image">
+                    <img src="https://picsum.photos/300/300?random=1" alt="Smartphone">
+                    <div class="heart-icon">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#3483fa" stroke-width="2"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path></svg>
+                    </div>
+                </div>
+                <div class="card-info">
+                    <h3 class="product-title">Smartphone Galaxy S23 Ultra 5G 256GB</h3>
+                    <div class="price-row">
+                        <span class="old-price">R$ 8.999</span>
+                    </div>
+                    <div class="price-current">
+                        <span class="symbol">R$</span>
+                        <span class="amount">5.499</span>
+                        <span class="discount">38% OFF</span>
+                    </div>
+                    <div class="installments">em 10x R$ 549,90 sem juros</div>
+                    <div class="shipping free">Chega grátis amanhã</div>
+                </div>
+            </a>
+
+            <!-- Product 2 -->
+            <a href="produto.html" class="product-card">
+                <div class="card-image">
+                    <img src="https://picsum.photos/300/300?random=2" alt="Notebook">
+                </div>
+                <div class="card-info">
+                    <h3 class="product-title">Notebook Dell Inspiron i5 8GB 256GB SSD</h3>
+                    <div class="price-row">
+                        <span class="old-price">R$ 4.199</span>
+                    </div>
+                    <div class="price-current">
+                        <span class="symbol">R$</span>
+                        <span class="amount">3.299</span>
+                        <span class="discount">21% OFF</span>
+                    </div>
+                    <div class="installments">em 10x R$ 329,90 sem juros</div>
+                    <div class="shipping free">Frete grátis</div>
+                </div>
+            </a>
+
+            <!-- Product 3 -->
+            <a href="produto.html" class="product-card">
+                <div class="card-image">
+                    <img src="https://picsum.photos/300/300?random=3" alt="Smart TV">
+                </div>
+                <div class="card-info">
+                    <h3 class="product-title">Smart TV 50" 4K LED Crystal UHD</h3>
+                    <div class="price-current">
+                        <span class="symbol">R$</span>
+                        <span class="amount">2.399</span>
+                    </div>
+                    <div class="installments">em 10x R$ 239,90 sem juros</div>
+                    <div class="shipping free">Chega grátis amanhã</div>
+                </div>
+            </a>
+
+            <!-- Product 4 -->
+            <a href="produto.html" class="product-card">
+                <div class="card-image">
+                    <img src="https://picsum.photos/300/300?random=4" alt="Fone JBL">
+                </div>
+                <div class="card-info">
+                    <h3 class="product-title">Fone de Ouvido Bluetooth JBL Tune 510BT</h3>
+                    <div class="price-current">
+                        <span class="symbol">R$</span>
+                        <span class="amount">249</span>
+                        <span class="discount">16% OFF</span>
+                    </div>
+                    <div class="installments">em 3x R$ 83,00 sem juros</div>
+                    <div class="shipping full">
+                        <svg width="12" height="12" viewBox="0 0 24 24" fill="#00a650" stroke="#00a650" stroke-width="2"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon></svg>
+                        Full
+                    </div>
+                </div>
+            </a>
+             <!-- Product 5 -->
+             <a href="produto.html" class="product-card">
+                <div class="card-image">
+                    <img src="https://picsum.photos/300/300?random=5" alt="PlayStation 5">
+                </div>
+                <div class="card-info">
+                    <h3 class="product-title">Console PlayStation 5 + God of War Ragnarök</h3>
+                    <div class="price-row">
+                        <span class="old-price">R$ 4.499</span>
+                    </div>
+                    <div class="price-current">
+                        <span class="symbol">R$</span>
+                        <span class="amount">3.999</span>
+                        <span class="discount">11% OFF</span>
+                    </div>
+                    <div class="installments">em 10x R$ 399,90 sem juros</div>
+                    <div class="shipping free">Frete grátis</div>
+                </div>
+            </a>
+        </div>
+    </main>
+
+    <footer class="site-footer">
+        <div class="container">
+            <p>Copyright © 1999-2024 Ebazar.com.br LTDA.</p>
+            <p>CNPJ n.º 03.007.331/0001-41 / Av. das Nações Unidas, nº 3.003, Bonfim, Osasco/SP - CEP 06233-903</p>
+        </div>
+    </footer>
+</body>
 </html>
