@@ -3,91 +3,139 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Smartphone Galaxy S23 - Mercado Clone</title>
+    <title>Smartphone Galaxy S23 Ultra - Mercado Clone</title>
     <link rel="stylesheet" href="styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
 </head>
 <body>
-    <!-- Header -->
+    <!-- Mesmo Header da Home -->
     <header class="site-header">
-        <div class="container header-content">
-            <div class="logo-area">
-                <a href="index.html" class="logo">mercadoclone</a>
-            </div>
-            
-            <div class="search-area">
-                <form action="index.html" class="search-box">
+        <div class="container">
+            <div class="header-top">
+                <a href="index.html" class="logo">
+                    mercadoclone
+                    <span class="logo-sub">com.br</span>
+                </a>
+                <form action="#" class="search-box">
                     <input type="text" placeholder="Buscar produtos, marcas e muito mais...">
                     <button type="button" class="search-btn">
-                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#666" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#666" stroke-width="1.5"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
                     </button>
                 </form>
+                <div class="header-promo"></div>
             </div>
-             <div class="menu-area">
-                <a href="#"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"></path><line x1="3" y1="6" x2="21" y2="6"></line><path d="M16 10a4 4 0 0 1-8 0"></path></svg></a>
+            <div class="header-bottom">
+                <div class="location-menu">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#333" stroke-width="1.5"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg>
+                    <div class="loc-text">
+                        <span class="loc-label">Informe seu</span>
+                        <span class="loc-value">CEP</span>
+                    </div>
+                </div>
+                <nav class="nav-menu">
+                    <ul>
+                        <li><a href="#">Categorias</a></li>
+                        <li><a href="#">Ofertas</a></li>
+                        <li><a href="#">Histórico</a></li>
+                        <li><a href="#">Vender</a></li>
+                        <li><a href="#">Contato</a></li>
+                    </ul>
+                </nav>
             </div>
         </div>
     </header>
 
-    <main class="container main-content" style="margin-top: 20px;">
-        <div class="pdp-grid">
-            <!-- Left Column: Gallery -->
-            <div class="pdp-gallery">
-                <div class="gallery-thumbnails">
-                    <img src="https://picsum.photos/300/300?random=1" class="active">
-                    <img src="https://picsum.photos/300/300?random=10">
-                    <img src="https://picsum.photos/300/300?random=11">
+    <div class="container breadcrumb">
+        <a href="index.html">Voltar à lista</a> | <a href="#">Celulares</a> > <a href="#">Samsung</a> > <a href="#">Galaxy S</a>
+    </div>
+
+    <!-- Layout Principal PDP -->
+    <main class="container pdp-wrapper">
+        <div class="pdp-container">
+            
+            <!-- Coluna Esquerda: Imagens -->
+            <div class="pdp-gallery-section">
+                <div class="pdp-thumbs">
+                    <div class="thumb active"><img src="https://picsum.photos/60/60?random=1" alt=""></div>
+                    <div class="thumb"><img src="https://picsum.photos/60/60?random=10" alt=""></div>
+                    <div class="thumb"><img src="https://picsum.photos/60/60?random=11" alt=""></div>
+                    <div class="thumb"><img src="https://picsum.photos/60/60?random=12" alt=""></div>
                 </div>
-                <div class="gallery-main">
-                    <img src="https://picsum.photos/500/500?random=1" alt="Produto Grande">
+                <div class="pdp-main-image">
+                    <img src="https://picsum.photos/500/500?random=1" alt="Produto Principal">
                 </div>
             </div>
 
-            <!-- Right Column: Info -->
-            <div class="pdp-info">
-                <span class="condition">Novo  |  120 vendidos</span>
-                <h1 class="pdp-title">Smartphone Samsung Galaxy S23 Ultra 5G 256GB 12GB RAM</h1>
-                
-                <div class="star-rating">
-                    ★★★★★ <span class="review-count">(120 avaliações)</span>
+            <!-- Coluna Central: Info & Descrição (Desktop: A info principal fica na direita, mas descrição aqui) -->
+            <!-- Para simplificar, vou usar o layout de 2 colunas: Esquerda (Foto+Desc), Direita (BuyBox) -->
+            
+            <!-- Coluna Direita: Buy Box -->
+            <div class="pdp-buybox">
+                <div class="pdp-header">
+                    <span class="condition">Novo | 489 vendidos</span>
+                    <h1 class="pdp-title">Smartphone Samsung Galaxy S23 Ultra 5G 256GB 12GB RAM</h1>
+                    <div class="rating-stars">
+                        ★★★★★ <span class="review-qty">(128 avaliações)</span>
+                    </div>
                 </div>
 
-                <div class="pdp-price">
-                    <span class="old-price">R$ 8.999</span>
-                    <div class="current-price-row">
+                <div class="pdp-price-area">
+                    <span class="price-old">R$ 8.999</span>
+                    <div class="price-main">
                         <span class="symbol">R$</span>
                         <span class="amount">5.499</span>
-                        <span class="discount">38% OFF</span>
+                        <span class="cents">00</span>
+                        <span class="discount-tag">38% OFF</span>
                     </div>
                     <div class="installments">em 10x R$ 549,90 sem juros</div>
+                    <a href="#" class="payment-methods">Ver os meios de pagamento</a>
                 </div>
 
-                <div class="pdp-shipping">
-                    <span class="green-text">Chega grátis amanhã</span>
-                    <p class="sub-text">Comprando dentro das próximas 2 h 15 min</p>
+                <div class="pdp-shipping-box">
+                    <div class="shipping-icon">🚚</div>
+                    <div class="shipping-info">
+                        <p class="shipping-green">Chega grátis <strong>amanhã</strong></p>
+                        <p class="shipping-sub">Comprando dentro das próximas 2 h 15 min</p>
+                        <a href="#">Mais formas de entrega</a>
+                    </div>
                 </div>
 
-                <div class="stock-info">
-                    Estoque disponível
+                <div class="stock-display">Estoque disponível</div>
+                
+                <div class="quantity-selector">
+                    Quantidade: <strong>1 unidade</strong> <span class="stock-qty">(99 disponíveis)</span>
                 </div>
 
-                <button class="btn btn-primary">Comprar agora</button>
-                <button class="btn btn-secondary">Adicionar ao carrinho</button>
-
-                <div class="protection-info">
-                    <p>Compra Garantida, receba o produto que está esperando ou devolvemos o dinheiro.</p>
+                <div class="buy-buttons">
+                    <button class="btn-buy-now">Comprar agora</button>
+                    <button class="btn-add-cart">Adicionar ao carrinho</button>
                 </div>
+
+                <ul class="benefit-list">
+                    <li><span class="icon">↩️</span> <strong>Devolução grátis.</strong> Você tem 7 dias a partir da data de recebimento.</li>
+                    <li><span class="icon">🛡️</span> <strong>Compra Garantida,</strong> receba o produto que está esperando ou devolvemos o dinheiro.</li>
+                </ul>
             </div>
         </div>
 
-        <div class="description-section">
+        <!-- Descrição movida para baixo -->
+        <div class="pdp-description">
             <h3>Descrição</h3>
-            <p>O Samsung Galaxy S23 Ultra é o smartphone definitivo para quem busca o máximo em tecnologia. Com sua câmera de 200MP, processador Snapdragon 8 Gen 2 for Galaxy e S Pen integrada, ele redefine o que um celular pode fazer. Tela Dynamic AMOLED 2X de 6.8 polegadas com 120Hz para fluidez incrível.</p>
+            <p>O Samsung Galaxy S23 Ultra é o smartphone definitivo para quem busca o máximo em tecnologia. Com sua câmera de 200MP, processador Snapdragon 8 Gen 2 for Galaxy e S Pen integrada, ele redefine o que um celular pode fazer.</p>
+            <br>
+            <p><strong>Principais Características:</strong></p>
+            <ul>
+                <li>Tela Dynamic AMOLED 2X de 6.8" 120Hz</li>
+                <li>Processador Snapdragon 8 Gen 2</li>
+                <li>Câmera quádrupla traseira de até 200MP</li>
+                <li>Bateria de 5.000mAh</li>
+            </ul>
         </div>
     </main>
 
     <footer class="site-footer">
-        <div class="container">
-            <p>Copyright © 1999-2024 Ebazar.com.br LTDA.</p>
+        <div class="container footer-content">
+            <p class="copyright">Copyright © 1999-2024 Ebazar.com.br LTDA.</p>
         </div>
     </footer>
 </body>
