@@ -26,7 +26,7 @@
     <!-- Babel for in-browser compilation -->
     <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
     
-    <!-- Import Maps: Cleaned up to use strictly React 18 from esm.sh to avoid conflicts -->
+    <!-- Import Maps: Cleaned to use strictly React 18 from esm.sh to prevent freezing/crashes -->
     <script type="importmap">
 {
   "imports": {
@@ -34,8 +34,8 @@
     "react-dom/client": "https://esm.sh/react-dom@18.2.0/client",
     "@google/genai": "https://esm.sh/@google/genai",
     "lucide-react": "https://esm.sh/lucide-react",
-    "react-dom/": "https://aistudiocdn.com/react-dom@^19.2.0/",
-    "react/": "https://aistudiocdn.com/react@^19.2.0/"
+    "react/": "https://aistudiocdn.com/react@^19.2.0/",
+    "react-dom/": "https://aistudiocdn.com/react-dom@^19.2.0/"
   }
 }
 </script>
